@@ -1,0 +1,1 @@
+web: gunicorn food-safe-scanner.wsgi --log-file -
