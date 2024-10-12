@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="">
+    </head>
+    <body style="background-color:#EDF2EF">
+        <main class="mx-3">
+          <div class="d-flex align-items-center  justify-content-between">
+            <a href="{% url 'home' %}">
+            <i class="fa-solid fa-chevron-left p-2 bg-secondary-subtle text-success rounded-circle"></i>
+            </a>
+            <h2 class="text-success text-center my-3 fw-light">Scan Result</h2>
+            <div></div>
+          </div>
+            <div>
+                <div class="card mb-3 rounded-4 mx-auto" style="max-width: 540px;">
+                    <div class="row g-0">
+                      <div class="col-md-4 d-flex align-item-center">
+                        <img src="{{response.product.image_url}}" class="rounded-4 img-thumbnail w-100 object-fit-scale my-auto mx-1 mt-1 rounded-4" alt="{{response.product.product_name}}" style="height:300px;">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title mb-4">{{response.product.product_name}}</h5>
+                          {% comment %} Nutriscore info button {% endcomment %}
+                          <p class=" p-2 rounded fw-bold me-2 d-inline-block" 
+                            type="button" 
+                            style="font-size:0.8rem;background-color: {% if response.product.nutriscore_grade == 'a' %}#4CAF50{% elif response.product.nutriscore_grade == 'b' %}#8BC34A{% elif response.product.nutriscore_grade == 'c' %}#FFF15C{% elif response.product.nutriscore_grade == 'd' %}#FF8E47{% elif response.product.nutriscore_grade == 'e' %}#FF3633{% else %}#CCCBCD{% endif %};"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#Nutriscore-modal"
+                          >
+                            <i class="fa-brands fa-nutritionix"></i> NUTRI SCORE : {{response.product.nutriscore_grade|upper}} 
+                          </p>
+                          <!-- Modal -->
+                          <div class="modal fade" id="Nutriscore-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Nutri Score</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  Nutri-Score is a nutritional labelling system printed on the front of each food packaging. With the aid of the traffic light colour-coded letter scale, consumers can see at a glance how balanced or unbalanced a food product is - especially in the case of processed products.
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {% comment %} Eco score info button {% endcomment %}
+                            <p class=" p-2 rounded fw-bold d-inline-block" 
+                                type="button"
+                                style="font-size:0.8rem; background-color: {% if response.product.ecoscore_grade == 'a' %}#4CAF50{% elif response.product.ecoscore_grade == 'b' %}#8BC34A{% elif response.product.ecoscore_grade == 'c' %}#FFF15C{% elif response.product.ecoscore_grade == 'd' %}#FF8E47{% elif response.product.ecoscore_grade == 'e' %}#FF3633{% else %}#CCCBCD{% endif %};" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#Ecoscore-modal"
+                            >
+                            <i class="fa-brands fa-envira"></i> ECO SCORE : {{response.product.ecoscore_grade|upper}}</p>
+                            
+                              <!-- Modal -->
+                          <div class="modal fade" id="Ecoscore-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel">Eco Score</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  Eco-Score classes food products from A (low) to E (high) according to their impact on the environment. Eco-Score aims to inform consumers on the environmental impact of the food they choose so as to guide them towards more responsible consumption.
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                            <div class="d-flex flex-wrap mt-2">
+                                {%for nutrient_name,nutrient_level in response.product.nutrient_levels.items %}
+                                <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">{{nutrient_name|title}}: {{nutrient_level|title}}</p>
+                                {% endfor %}
+                                {% comment %} <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">Fat: Moderate</p>
+                                <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">Salt: Low</p>
+                                <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">Saturate-Fat: low</p>
+                                <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">Sugars: Moderate</p> {% endcomment %}
+                            </div>
+                            <p class="mt-3 fw-bold">Quantity: {{response.product.quantity|upper}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="mx-auto my-4" style="max-width:600px;">
+                <p class="d-flex justify-content-between bg-secondary-subtle rounded-pill border border-3 border-light">
+                    <button
+                      class="btn btn-secondary-subtle toggle-btn rounded-pill px-5"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#nutrition-info"
+                      aria-expanded="true"
+                      aria-controls="collapseExample"
+                    >
+                     Nutrition
+                    </button>
+                    <button
+                      class="btn btn-secondary-subtle toggle-btn rounded-pill px-5"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#Allergens-info"
+                      aria-expanded="true"
+                      aria-controls="collapseExample1"
+                    >
+                      Allergens
+                    </button>
+                  </p>
+                  <div class="collapse" id="nutrition-info" style="">
+                    <div class="card card-body rounded-4">
+                      <h6 class="text-success mb-0">Positives</h6>
+                      <div class="positive-protein mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Protein per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.proteins_100g}}g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.proteins_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="positive-Carbs mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Carbs per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.carbohydrates_100g}}g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.carbohydrates_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="positive-Fiber mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Fiber per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.fiber_100g}}g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.fiber_100g}}%"></div>
+                        </div>
+                      </div>
+                      <div class="positive-calcium mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Calcium per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.calcium_100g}}g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.calcium_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="negatives">
+                        <h6 class="text-danger mt-4">Negatives</h6>
+                        <div class="negative-Fat mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Fat per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.fat_100g}}g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.fat_100g}}%"></div>
+                          </div>
+                        </div>
+
+                        <div class="negative-Sugar mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Sugar per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.sugars_100g}}g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.sugars_100g}}%"></div>
+                          </div>
+                        </div>
+                        <div class="negative-Sodium mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Sodium per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.sodium_100g}}g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.sodium_100g}}%"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} <div class="d-flex justify-content-between align-items-center mb-0">
+                      <p>Calcium per 100g :</p><p class="fw-bold">{{response.product.nutriments.calcium_100g}}g</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <p>Fiber per 100g :</p><p class="fw-bold">{{response.product.nutriments.fiber_100g}}g</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <p>Carbs per 100g :</p><p class="fw-bold">{{response.product.nutriments.carbohydrates_100g}}g</p>
+                    </div> 
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p>Fat per 100g :</p><p class="fw-bold">{{response.product.nutriments.fat_100g}}g</p>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <p>Sodium per 100g :</p><p class="fw-bold">{{response.product.nutriments.sodium_100g}}g</p>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <p>Sugar per 100g :</p><p class="fw-bold">{{response.product.nutriments.sugars_100g}}g</p>
+                      </div>
+                    {% endcomment %}
+                  </div>
+                  <div class="collapse" id="Allergens-info" style="">
+                    <div class="card card-body rounded-4">
+                        <h5 class="text-danger mb-4 ms-2">Allergens</h5>
+                      <div>
+                        <ul class="list-group">
+                            {% for allergen in response.product.allergens_tags %}
+                            <li class="list-group-item">{{ allergen|default:""|slice:"3:"|title }}</li>
+                            {% endfor %}
+                          </ul>
+                          <div>
+                            <button type="button" class="btn btn-secondary mt-5 rounded-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="font-size:0.8rem">
+                               See Categories
+                              </button>
+                              
+                              <!-- Modal -->
+                              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5 mb-2" id="staticBackdropLabel">Categories of Product</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body d-flex flex-wrap">
+                                        {% for Category in response.product.categories_hierarchy %}
+                                        <p class="bg-secondary-subtle px-3 py-1 me-3 rounded-pill">{{Category|default:""|slice:"3:"|title}}</p>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+            </div>
+        </main>
+        {{alternative_product_response}}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script>
+            document.querySelectorAll('.toggle-btn').forEach(function (button) {
+                   button.addEventListener('click', function () {
+                       var collapseTarget = document.querySelector(button.getAttribute('data-bs-target'));
+                       
+                       // Close all other collapsible elements
+                       document.querySelectorAll('.collapse.show').forEach(function (collapse) {
+                           if (collapse.id !== button.getAttribute('data-bs-target').substring(1)) {
+                               new bootstrap.Collapse(collapse);
+                           }
+                       });
+       
+                       // Toggle the collapse
+                       new bootstrap.Collapse(collapseTarget);
+       
+                       // Change button color when the associated collapse is shown
+                       document.querySelectorAll('.toggle-btn').forEach(function (btn) {
+                           btn.classList.remove('btn-success');
+                           btn.classList.add('btn-secondary-subtle');
+                       });
+                       button.classList.add('btn-success');
+                       button.classList.remove('btn-secondary-subtle');
+                   });
+               });
+         </script>
+    </body>
+</html>

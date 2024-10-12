@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-success fixed-top m-2 rounded">
+            <div class="container-fluid py-2">
+              <a class="navbar-brand mx-auto" href="#" ><i class="fa-brands fa-envira fa-2xl"></i> <h3 class="d-inline">Food Safe</h3></a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="offcanvas offcanvas-end text-bg-dark bg-success bg-gradient w-50" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                <div class="offcanvas-header">
+                  <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Hi, Shiv </h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Scan</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-light">
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Allergies</a></li>
+                        <li>
+                          <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <main class="bg-secondary-subtle mx-2 rounded p-3" style="margin-top:6em;">
+            <div class="d-flex justify-content-between justify-content-sm-start align-items-center">
+                <h1 class="fw-bold me-5">Hi, Shiv</h1> 
+                <img class="border border-2 border-success rounded-circle" src="{% static 'images/profile_pic.jfif' %}" style="width:50px;height:50px;">
+            </div>
+            <div class="mt-3">
+                <h2>Random Food for today</h2>
+                <div class="card mb-3 mt-2 py-2" style="max-width: 800px;">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <img src="{% static 'images/product-image1.webp' %}" class="img-fluid rounded-start" alt="...">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">SOY MILK</h5>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Sofit Soya Naturally Sugar Free Drink, 1 L Tetra</h6>
+                            <div class="d-flex align-items-center flex-wrap mt-3">
+                                <p class="bg-success-subtle p-2 rounded fw-bold me-2"><i class="fa-brands fa-nutritionix"></i> NUTRI SCORE : A </p>
+                                <p class="bg-success-subtle p-2 rounded fw-bold"><i class="fa-brands fa-envira"></i> ECO-SCORE : B</p>
+                            </div>
+                            <h3>Health</h3>
+                            <p><strong>Ingredients: </strong>soy base (96.8%) (water, peeled soybeans (8%)),...</p>
+                            <p class="mb-0"><strong>Allergens: </strong>Soybeans</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div>
+                <h3 class="mt-5 mb-3 text-center">Recommended for you</h3>
+                <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width:1200px;" >
+                    <div class="carousel-indicators">
+                      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <div class="card mb-3 mx-auto py-3" style="max-width:1200px;">
+                            <img src="{% static 'images/recommend-image1.jfif' %}" class="card-img-top object-fit-contain" alt="..." style="height:300px;">
+                            <div class="card-body">
+                              <h5 class="card-title">SOY MILK POWDER</h5>
+                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                              <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="carousel-item">
+                        <div class="card mb-3 mx-auto py-3" style="max-width:1200px;">
+                            <img src="{% static 'images/recommend-image2.jfif' %}" class="card-img-top object-fit-contain" alt="..." style="height:300px;">
+                            <div class="card-body">
+                              <h5 class="card-title">COCONUT CHIPS</h5>
+                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                              <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="carousel-item">
+                        <div class="card mb-3 mx-auto py-3" style="max-width:1200px;">
+                            <img src="{% static 'images/recommend-image1.jfif' %}" class="card-img-top object-fit-contain" alt="..." style="height:300px;">
+                            <div class="card-body">
+                              <h5 class="card-title">SOY MILK POWDER</h5>
+                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                              <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon bg-secondary rounded-5" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                      <span class="carousel-control-next-icon bg-secondary rounded-5" aria-hidden="true" ></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+            </div>
+
+          </main>
+            <a href="{% url 'home' %}">
+            <div class="fixed-bottom bg-success p-3 rounded-5 mx-auto scan-icon mb-1">
+                <p class="mb-0 text-light">
+                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.4" d="M2 9.75C1.59 9.75 1.25 9.41 1.25 9V6.5C1.25 3.6 3.61 1.25 6.5 1.25H9C9.41 1.25 9.75 1.59 9.75 2C9.75 2.41 9.41 2.75 9 2.75H6.5C4.43 2.75 2.75 4.43 2.75 6.5V9C2.75 9.41 2.41 9.75 2 9.75Z" fill="#fff"/>
+                        <path d="M22 9.75C21.59 9.75 21.25 9.41 21.25 9V6.5C21.25 4.43 19.57 2.75 17.5 2.75H15C14.59 2.75 14.25 2.41 14.25 2C14.25 1.59 14.59 1.25 15 1.25H17.5C20.39 1.25 22.75 3.6 22.75 6.5V9C22.75 9.41 22.41 9.75 22 9.75Z" fill="#fff"/>
+                        <path opacity="0.4" d="M17.5 22.75H16C15.59 22.75 15.25 22.41 15.25 22C15.25 21.59 15.59 21.25 16 21.25H17.5C19.57 21.25 21.25 19.57 21.25 17.5V16C21.25 15.59 21.59 15.25 22 15.25C22.41 15.25 22.75 15.59 22.75 16V17.5C22.75 20.4 20.39 22.75 17.5 22.75Z" fill="#fff"/>
+                        <path d="M9 22.75H6.5C3.61 22.75 1.25 20.4 1.25 17.5V15C1.25 14.59 1.59 14.25 2 14.25C2.41 14.25 2.75 14.59 2.75 15V17.5C2.75 19.57 4.43 21.25 6.5 21.25H9C9.41 21.25 9.75 21.59 9.75 22C9.75 22.41 9.41 22.75 9 22.75Z" fill="#fff"/>
+                        <path d="M9 5.25H7C5.86 5.25 5.25 5.85 5.25 7V9C5.25 10.15 5.86 10.75 7 10.75H9C10.14 10.75 10.75 10.15 10.75 9V7C10.75 5.85 10.14 5.25 9 5.25Z" fill="#fff"/>
+                        <path opacity="0.4" d="M17 5.25H15C13.86 5.25 13.25 5.85 13.25 7V9C13.25 10.15 13.86 10.75 15 10.75H17C18.14 10.75 18.75 10.15 18.75 9V7C18.75 5.85 18.14 5.25 17 5.25Z" fill="#fff"/>
+                        <path opacity="0.4" d="M9 13.25H7C5.86 13.25 5.25 13.85 5.25 15V17C5.25 18.15 5.86 18.75 7 18.75H9C10.14 18.75 10.75 18.15 10.75 17V15C10.75 13.85 10.14 13.25 9 13.25Z" fill="#fff"/>
+                        <path d="M17 13.25H15C13.86 13.25 13.25 13.85 13.25 15V17C13.25 18.15 13.86 18.75 15 18.75H17C18.14 18.75 18.75 18.15 18.75 17V15C18.75 13.85 18.14 13.25 17 13.25Z" fill="#fff"/>
+                        </svg>
+                </p>
+            </div>
+            </a>
+    
+          
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+</html>

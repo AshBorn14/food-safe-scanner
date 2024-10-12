@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-4 offset-md-4 my-3 bg-secondary-subtle p-3 rounded-3 my-5">
+    <h1 class="text-center text-primary-emphasis">Login</h1>
+    <form  method="POST" class="my-4 " action="">
+        {% csrf_token %}
+        {% if form.errors or form.non_field_errors %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Please Check the form again
+                {% for field in form %}
+                    {% if field.errors %}
+                        {{ field.errors }}
+                    {% endif %}
+                    {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                
+            </div>
+        {% endif %}
+        
+        {{form.as_p}}
+        <button type="submit" class="btn btn-success btn-md mt-3 w-100 fs-5">Log In</button>
+        <div>
+            <p class="text-center my-3">OR</p>
+    
+            <a class="btn btn-primary w-100 py-2" href="{% url 'signup' %}">New User Sign up</a>
+        </div>
+        
+    </form>
+    </div>
+
+{% endblock %}

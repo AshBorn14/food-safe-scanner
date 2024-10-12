@@ -1,0 +1,448 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/scan_result.css' %}">
+    </head>
+    <body>
+
+        <!-- header color based on the match percentage -->
+        {% if response.status %}
+        <header class="py-4 px-2 ">
+            <div class="header-content navbar-elements">
+
+                <h2>{{response.product.product_name}}</h2>
+                
+                <nav class="d-flex justify-content-between align-items-start">
+                    <ul class="d-flex list-unstyled flex-wrap align-item-center">
+                        <li class="me-2 mb-2 bg-light px-3 py-1 rounded-pill" role="button" ><a class="text-decoration-none text-dark" href="#product-detail">Product</a></li>
+                        <li class="me-2 mb-2 bg-light px-3 py-1 rounded-pill" role="button"><a class="text-decoration-none text-dark" href="#Preferences">Preferences</a></li>
+                        <li class="me-2 mb-2 bg-light px-3 py-1 rounded-pill" role="button"><a class="text-decoration-none text-dark" href="#health">Health</a></li>
+                        <li class="me-2 mb-2 bg-light px-3 py-1 rounded-pill" role="button"><a class="text-decoration-none text-dark" href="#nutrition">Nutrition</a></li>
+                    </ul>
+                    <a class="me-2 mb-2 bg-secondary-subtle px-3 py-1 rounded-pill text-decoration-none text-dark" href="{% url 'home' %}">Back</a>
+                </nav>
+            </div>
+        </header>
+        <main>
+            <div class="card mb-3  product-main-detail" id="product-detail">
+                <div class="progress mb-2 rounded-top-2 rounded-bottom-0" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height:35px">
+                    <div class="progress-bar overflow-visible {% if percentage_match > 75 %}bg-success{% elif percentage_match > 40 %}bg-warning{% elif percentage_match > 0 %}bg-danger{% endif %}" style="width:{{percentage_match}}%;text-shadow:5px 5px 10px #242424 ;">
+                      <span class="px-3">
+                        {{percentage_match}}% {% if percentage_match > 75 %}Very good match{% elif percentage_match > 40 %}Fair match{% elif percentage_match > 0 %}Bad match{% endif %}
+                        <span>
+                    </div>
+                  </div>
+                <div class="row g-0 m-3">
+                  <div class="col-md-4">
+                    <img src="{{response.product.image_url}}" class="img-fluid rounded-3" alt="" style="width:100%;">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h2 class="card-title fw-semibold m-0">{{response.product.product_name}}</h2>
+                      <p class="card-text mb-4"><small class="text-body-secondary">Quantity: {{response.product.quantity|upper}}</small></p>
+                      <p class="card-text mb-4"><span class="fw-semibold">Brand:</span> {{response.product.brands}}</p>
+                      {% comment %} <p class="card-text mb-4"><span class="fw-semibold">Labels:</span> plant-based-foods-and-beverages","plant-based-foods","legumes-and-their-products","spreads","nuts-and-their-products","plant-based-spreads","oilseed-purees","legume-butters","nut-butters","peanut-butters</p> {% endcomment %}
+                      <p class="card-text"><span class="fw-semibold">Categories:</span> 
+                        {% for category in response.product.categories_tags %}
+                        {{category|default:""|slice:"3:"|title}} |
+                        {% endfor %}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- your preferences card -->
+              <div class="card" id="Preferences">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title fw-semibold mb-4">Comparsion with your preferences</h3>
+                    <span class="py-3 px-3 rounded rounded-pill text-light {% if percentage_match_nutri_nova_eco > 75 %}bg-success{% elif percentage_match_nutri_nova_eco > 40 %}bg-warning{% else %}bg-danger{% endif %}" style="font-size:0.8rem">Match: {{percentage_match_nutri_nova_eco}}%</span>
+                  </div>
+                  <div class="d-flex justify-content-between flex-wrap mx-auto">
+                    <div class="p-3 d-flex justify-content-between align-items-center mb-3 rounded-3 me-2">
+                      <img 
+                        src={% if response.product.nutriscore_grade == 'a' %}{% static 'images/nutriscore-a.svg' %}{% elif response.product.nutriscore_grade == 'b' %}{% static 'images/nutriscore-b.svg' %}{% elif response.product.nutriscore_grade == 'c' %}{% static 'images/nutriscore-c.svg' %}{% elif response.product.nutriscore_grade == 'd' %}{% static 'images/nutriscore-d.svg' %}{% elif response.product.nutriscore_grade == 'e' %}{% static 'images/nutriscore-e.svg' %}{% else %}{% static 'images/nutriscore-not-applicable.svg' %}{% endif %}
+                        class="preferences-icon me-3">
+                      <p class="mb-0">Nutri Score {{response.product.nutriscore_grade|upper}}<span class="d-block">{% if response.product.nutriscore_grade == 'a' %}Very good nutritional quality{% elif response.product.nutriscore_grade == 'b' %}Good nutritional quality{% elif response.product.nutriscore_grade == 'c' %}Average nutritional quality{% elif response.product.nutriscore_grade == 'd' %}Poor nutritional quality{% elif response.product.nutriscore_grade == 'e' %}Bad nutritional quality{% else %}Unknown nutritional quality{% endif %}
+
+                      </span></p>
+                    </div>
+                    <div class="p-3 d-flex justify-content-between align-items-center mb-3 rounded-3 me-2">
+                      <img src={% if response.product.ecoscore_grade == 'a' %}{% static 'images/ecoscore-a.svg' %}{% elif response.product.ecoscore_grade == 'b' %}{% static 'images/ecoscore-b.svg' %}{% elif response.product.ecoscore_grade == 'c' %}{% static 'images/ecoscore-c.svg' %}{% elif response.product.ecoscore_grade == 'd' %}{% static 'images/ecoscore-d.svg' %}{% elif response.product.ecoscore_grade == 'e' %}{% static 'images/ecoscore-e.svg' %}{% else %}{% static 'images/ecoscore-not-applicable.svg' %}{% endif %}
+                      class="preferences-icon me-3">
+                      <p class="mb-0">Eco Score {{response.product.ecoscore_grade|upper}}<span class="d-block">{% if response.product.ecoscore_grade == 'a' %}Very low environment impact{% elif response.product.ecoscore_grade == 'b' %}Low environment impact{% elif response.product.ecoscore_grade == 'c' %}Moderate envionmental impact{% elif response.product.ecoscore_grade == 'd' %}High environmental impact{% elif response.product.ecoscore_grade == 'e' %}Very high environmental impact{% else %}Unknown{% endif %}</span>
+                      </p>
+                    </div>
+                    <div class="p-3 d-flex justify-content-between align-items-center mb-3 rounded-3 me-2">
+                      <img src={% if response.product.nova_group == 1 %}{% static 'images/nova-group-1.svg' %}{% elif response.product.nova_group == 2 %}{% static 'images/nova-group-2.svg' %}{% elif response.product.nova_group == 3 %}{% static 'images/nova-group-3.svg' %}{% elif response.product.nova_group == 4 %}{% static 'images/nova-group-4.svg' %}{% else %}{% static 'images/nova-group-unknown.svg' %}{% endif %} 
+                        class="preferences-icon nova-icon me-3">
+                      <p class="mb-0">NOVA {{response.product.nova_group}}<span class="d-block">{{response.product.nova_groups_tags.0|default:""|slice:"5:"|title}}</span></p></div>
+                    </div>
+                    {% comment %} <div class="p-3 d-flex justify-content-between align-items-center mb-3 rounded-3 me-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect style="fill:green;stroke:none" width="24" height="24" ry="5"/><path style="fill:#fff;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M5 5c0 4 1 5 5 5 0-3-2-5-5-5ZM5 10c0 4 1 5 5 5 0-3-2-5-5-5zM5 15c0 4 1 5 5 5 0-3-2-5-5-5zM15 5c0 4-1 5-5 5 0-3 2-5 5-5zM15 10c0 4-1 5-5 5 0-3 2-5 5-5zM15 15c0 4-1 5-5 5 0-3 2-5 5-5z" transform="translate(2 2)"/><path style="fill:#fff;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M10 0c-2.121 2.121-2.121 4.95 0 7.071C12.121 4.95 12.121 2.121 10 0Z" transform="translate(2 2)"/><path style="fill:#0f0;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;opacity:.5" d="M21.377.623.623 21.377a4.964 4.964 0 0 0 2 2L23.377 2.623a4.964 4.964 0 0 0-2-2z"/></svg>
+                      <img src={% if response.product.no-gluten == 1 %}{% static 'images/no-gluten.svg' %}{% elif response.product.nova_group == 2 %}{% static 'images/nova-group-2.svg' %}{% elif response.product.nova_group == 3 %}{% static 'images/nova-group-3.svg' %}{% elif response.product.nova_group == 4 %}{% static 'images/nova-group-4.svg' %}{% else %}{% static {% endif %} 
+                        class="preferences-icon nova-icon me-3">
+                      <p class="mb-0">NOVA {{response.product.nova_group}}<span class="d-block">gluten</span></p></div>
+                    </div> {% endcomment %}
+                </div>
+              </div>
+              
+              <!-- Ingredient analysis -->
+              <div class="card my-3" id="health">
+                <div class="card-body">
+                  <h3 class="card-title fw-semibold mb-0">Ingredient Analysis</h3>
+                  <h6 class="card-subtitle mb-2 text-body-secondary"><small>Analysis is based only on listed ingredients and does not take into account manufacturing methods</small></h6>
+                  <div class="d-flex justify-content-between flex-wrap mt-4">
+                    <div class="d-flex align-items-center border rounded-3 p-2 pe-4 mb-2">
+                      <svg fill="{% if palm_oil_free %}#1E8F4E{% else %}#D93726{% endif %}"
+                        height="50px" width="50px" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg6" sodipodi:docname="palm-oil.svg" inkscape:version="1.0.2 (e86c870879, 2021-01-15)" class="icon" aria-hidden="true" focusable="false"><metadata id="metadata12"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/><dc:title/></cc:Work></rdf:RDF></metadata><defs id="defs10"/><sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="2488" inkscape:window-height="1376" id="namedview8" showgrid="true" inkscape:snap-global="true" inkscape:snap-to-guides="false" inkscape:snap-grids="true" inkscape:zoom="27.812866" inkscape:cx="6.2613239" inkscape:cy="9.1601285" inkscape:window-x="72" inkscape:window-y="27" inkscape:window-maximized="1" inkscape:current-layer="svg6" inkscape:document-rotation="0"><inkscape:grid type="xygrid" id="grid822"/></sodipodi:namedview><path inkscape:connector-curvature="0" d="M 1e-7,0 H 24 V 24 H 1e-7 Z" id="path2" fill="none"/><path id="path9621" d="m 15.308179,12.129383 c 0,0 -2.441765,2.703744 -2.441765,4.535195 0,1.346552 1.09521,2.441764 2.441765,2.441766 1.346552,0 2.441765,-1.095214 2.441765,-2.441766 0,-1.831453 -2.441765,-4.535195 -2.441765,-4.535195 z M 14,14.745744 c -0.87212,1.744239 0,3.488478 0.872119,3.924538 C 13.086515,18.127932 12.691821,16.489983 14,14.745744 Z" sodipodi:nodetypes="cssscccc"/><path d="M 8,20 C 8,16 9,10 12,7.5467809 l 1,-0.014451 C 10,10 10,16 10,20 Z" id="path1806" sodipodi:nodetypes="ccccc"/><path d="M 6,12 13,7 C 8,7 6,8 6,12 Z" id="path1808" sodipodi:nodetypes="ccc"/><path d="M 19,6 12,7.6327763 C 11.223543,4.7349989 16.032872,2.6539348 19,6 Z" id="path1810" sodipodi:nodetypes="ccc"/><path d="m 6,5 6.614151,3 C 12.614151,4.4532191 9.4805614,3.2034336 6,5 Z" id="path1812" sodipodi:nodetypes="ccc"/><path d="M 13.546781,13 11,7 c 3.546781,0 4.343347,2.5194386 2.546781,6 z" id="path1816" sodipodi:nodetypes="ccc"/><path d="M 18,12 11.298406,7.6075009 C 12.798406,5.0094247 18.267949,7.5358989 18,12 Z" id="path1818" sodipodi:nodetypes="ccc"/></svg>
+                        <p class="fs-5 ms-5 mb-0 fw-medium">{% if palm_oil_free %}Palm oil free
+                          {% else %}
+                            {% if 'en:may-contain-palm-oil' in response.product.ingredients_analysis_tags %}
+                              May Contain Palm oil
+                            {% elif 'en:palm-oil' in response.product.ingredients_analysis_tags %}
+                              Contain Palm oil
+                            {% else %}
+                            Palm Oil status unknown
+                            {% endif %}
+                          {% endif %}</p></div>
+
+                    <div class="d-flex align-items-center border rounded-3 p-2 pe-4 mb-2">
+                      <svg fill="{% if vegetarian %}#1E8F4E{% else %}#D93726{% endif %}" height="50px" width="50px" version="1.1" id="svg8" sodipodi:docname="vegetarian.svg" inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 24 24" class="icon" aria-hidden="true" focusable="false"><metadata id="metadata14"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/></cc:Work></rdf:RDF></metadata><defs id="defs12"/><sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1848" inkscape:window-height="1016" id="namedview10" showgrid="true" inkscape:zoom="14.849242" inkscape:cx="12.020816" inkscape:cy="12.020816" inkscape:window-x="364" inkscape:window-y="220" inkscape:window-maximized="0" inkscape:current-layer="svg8" inkscape:pagecheckerboard="0"><inkscape:grid type="xygrid" id="grid908"/></sodipodi:namedview><path d="M 6.5,22 C 4.57,22 3,20.43 3,18.5 3,15.875 4.5,12 6.5,12 8.5,12 10,15.875 10,18.5 10,20.43 8.43,22 6.5,22 Z" id="path6"/><g id="g921" transform="translate(-20.444)"><path d="m 35.001,5 c -0.497,2.268 -2.557,3.36 -2.557,6 v 10.027 c 0,0.974 10e-4,0.973 0.736,0.973 h 7.264 c 0.889,0 0.889,0 0.889,-1 V 11 c 0,-2.64 -2.061,-3.732 -2.557,-6 z m -1.557,6 h 1 v 10 h -1 z" id="path917"/><path d="m 36,2 h 1.777 c 0.89,0 0.89,0 0.89,2 H 35.11 c 0,-2 0,-2 0.889,-2 z" id="path919"/></g><path d="m 11.782966,2 c 0,0 -5.7753477,0.293474 -7.8313272,2.3488998 C 2.6310057,5.6695329 2.4659957,7.7133304 3.4532867,9.2166926 5.0618566,5.9513787 7.6593784,4.3245359 11,2.7829667 8.3332614,4.8334088 5.4721666,6.7011219 4.1648228,10.023469 5.6859043,11.335797 7.9910599,11.273779 9.4340656,9.8313267 11.489492,7.7753475 11.782966,2 11.782966,2 Z" id="path1025"/></svg>
+                      <p class="fs-5 ms-5 mb-0 fw-medium">{% if vegetarian %}
+                            Vegetarian
+                            {% else %}
+                              {% if 'en:non-vegetarian' in response.product.ingredients_analysis_tags %}
+                                Non-Vegetarian
+                              {% else %}
+                                
+                                Vegetarian status unknown
+                              {% endif %}
+                            {% endif %}</p>
+                      </div>
+
+                    <div class="d-flex align-items-center border rounded-3 p-2 pe-4 mb-2">
+                      <svg fill="{% if vegan %}#1E8F4E{% else %}#D93726{% endif %}" height="50px" width="50px" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 24 24" version="1.1" id="svg6" sodipodi:docname="leaf.svg" inkscape:version="0.92.3 (2405546, 2018-03-11)" class="icon" aria-hidden="true" focusable="false"><metadata id="metadata12"><rdf:RDF><cc:Work rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/><dc:title/></cc:Work></rdf:RDF></metadata><defs id="defs10"/><sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1017" id="namedview8" showgrid="true" inkscape:snap-global="true" inkscape:snap-to-guides="false" inkscape:snap-grids="true" inkscape:zoom="19.666667" inkscape:cx="5.3938205" inkscape:cy="15.582542" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="svg6"><inkscape:grid type="xygrid" id="grid822"/></sodipodi:namedview><path d="M 20,4 C 20,4 9.5697318,4.5298767 5.8574219,8.2421875 3.4723923,10.627218 3.1738923,14.318436 4.9570312,17.033203 7.8620879,11.135695 12.552925,8.1980751 18.585938,5.4140625 13.771456,9.1168329 8.6026462,12.48942 6.2421875,18.490234 8.989286,20.859708 13.152106,20.748285 15.757812,18.142578 19.470123,14.430266 20,4 20,4 Z" id="path871" inkscape:connector-curvature="0"/><path inkscape:connector-curvature="0" d="M 0,0 H 24 V 24 H 0 Z" id="path2" fill="none"/></svg>
+                      <p class="fs-5 ms-5 mb-0 fw-medium">{% if vegan %}Vegan{% else %}
+                              {% if 'en:non-vegan' in response.product.ingredients_analysis_tags %}
+                                Non-vegan
+                              {% else %}
+                                Vegan status unknown
+                              {% endif %}
+                            {% endif %}</p>
+                    </div>
+                    <div class="d-flex align-items-center border rounded-3 p-2 pe-4 mb-2">
+                      <svg width="50px" height="50px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <title>Gluten</title>
+                        <g fill="{% if 'en:no-gluten' in response.product.labels_tags %}#1E8F4E{% elif 'en:gluten' in response.product.labels_tags %}#D93726{% else %}#B3B3B3{% endif %}" id="Gluten" stroke="none" stroke-width="1" fill-rule="evenodd" stroke-linecap="round">
+                            <path d="M4.90709946,11.4653026 C7.01338466,13.0450699 7.44021176,16.0332059 5.86044447,18.1394911 C5.64363317,18.428563 5.39483672,18.6918116 5.11898453,18.9243074 L4.90709946,19.0928361 C2.80081426,17.5130688 2.37398717,14.5249329 3.95375445,12.4186477 C4.17056575,12.1295757 4.41936221,11.8663271 4.6952144,11.6338313 L4.90709946,11.4653026 Z M8.72073729,7.65153593 C10.8270225,9.23130322 11.2538496,12.2194392 9.6740823,14.3257244 C9.457271,14.6147963 9.20847454,14.8780449 8.93262236,15.1105407 L8.72073729,15.2790694 C6.61445209,13.6993021 6.18762499,10.7111661 7.76739228,8.60488094 C7.98420358,8.31580898 8.23300004,8.05256039 8.50885222,7.8200646 L8.72073729,7.65153593 Z M12.5343751,3.83776921 C14.6406603,5.4175365 15.0674874,8.40567244 13.4877201,10.5119576 C13.2709088,10.8010296 13.0221124,11.0642782 12.7462602,11.296774 L12.5343751,11.4653026 C10.4280899,9.88553536 10.0012628,6.89739942 11.5810301,4.79111422 C11.7978414,4.50204226 12.0466379,4.23879367 12.32249,4.00629788 L12.5343751,3.83776921 Z M20.1616508,11.4653026 C18.5820436,13.5715167 15.5940953,13.9984159 13.4878812,12.4188088 C13.1987527,12.2019697 12.9354572,11.953132 12.7029271,11.6772283 L12.5343751,11.4653026 C14.1139822,9.35908863 17.1019306,8.9321894 19.2081446,10.5117965 C19.4972732,10.7286356 19.7605687,10.9774733 19.9930988,11.253377 L20.1616508,11.4653026 Z M16.3480129,15.2790694 C14.7684058,17.3852834 11.7804574,17.8121826 9.67424341,16.2325755 C9.38511489,16.0157364 9.12181933,15.7668988 8.88928925,15.490995 L8.72073729,15.2790694 C10.3003444,13.1728554 13.2882928,12.7459561 15.3945068,14.3255632 C15.6836353,14.5424023 15.9469309,14.79124 16.179461,15.0671437 L16.3480129,15.2790694 Z M12.5343751,19.0928361 C10.954768,21.1990501 7.9668196,21.6259493 5.86060558,20.0463422 C5.57147707,19.8295031 5.30818151,19.5806655 5.07565143,19.3047617 L4.90709946,19.0928361 C6.48670659,16.9866221 9.47465498,16.5597228 11.580869,18.13933 C11.8699975,18.356169 12.1332931,18.6050067 12.3658232,18.8809104 L12.5343751,19.0928361 Z M20.9514816,3.04791286 C21.3238283,5.6544274 19.5128192,8.06908238 16.9065088,8.44139985 C16.548771,8.49250352 16.1866752,8.50272288 15.8271945,8.47205796 L15.5581541,8.44118932 C15.1858366,5.83487893 16.9968457,3.42022395 19.6031561,3.04790648 C20.0503283,2.9840269 20.5043101,2.98402905 20.9514816,3.04791286 Z" id="Combined-Shape" stroke="#000000">
+                    
+                    </path>
+                        </g>
+                    </svg>
+                      <p class="fs-5 ms-5 mb-0 fw-medium">
+                              {% if 'en:no-gluten' in response.product.labels_tags %}
+                                Non gluten
+                              {% elif 'en:gluten' in response.product.labels_tags %}
+                                Gluten
+                              {% else %}
+                                Gluten Status not known
+                              {% endif %}
+                            </p>
+                    </div>
+                    
+                  </div>
+                  <div class="my-4">
+                    <h6 class="ps-2 weight-600" style="font-size:1.1875em">Detailed Ingredient preferences Analysis</h6>
+                    <div class="accordion" id="accordionExample">
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#palmoilcollapse" aria-expanded="false" aria-controls="collapseone">
+                            {% if palm_oil_free %}Palm oil free
+                            {% else %}
+                              {% if 'en:may-contain-palm-oil' in response.product.ingredients_analysis_tags %}
+                                May Contain Palm oil
+                              {% elif 'en:palm-oil' in response.product.ingredients_analysis_tags %}
+                                Contain Palm oil
+                              {% else %}
+                              Palm Oil status unknown
+                              {% endif %}
+                            {% endif %}
+                          </button>
+                        </h2>
+                        <div id="palmoilcollapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if palm_oil_free %}
+                              No ingredients containing palm oil detected
+                            {% else %}
+                              <strong>Ingredients that contain palm oil:</strong>
+                              {% if palm_oil_ingredients %}
+                                {% for palm_oil_ingredient in palm_oil_ingredients %}
+                                  {{palm_oil_ingredient|default:""|slice:"3:"|capfirst}}
+                                  {% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                              {% else %}
+                                Info not available
+                              {% endif %}
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vegetariancollapse" aria-expanded="false" aria-controls="collapseTwo">
+                            {% if vegetarian %}
+                            Vegetarian
+                            {% else %}
+                              {% if 'en:non-vegetarian' in response.product.ingredients_analysis_tags %}
+                                Non-Vegetarian
+                              {% else %}
+                                Vegetarian status unknown
+                              {% endif %}
+                            {% endif %}
+                            
+                          </button>
+                        </h2>
+                        <div id="vegetariancollapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if vegetarian %}
+                              No non-vegetarian ingredients detected
+                            {% else %}
+                            <strong>Non-vegetarian ingredients:</strong>
+                            {% if non_vegetarian_ingredients %}
+                             {% for non_vegetarian_ingredient in non_vegetarian_ingredients %}
+                              {{non_vegetarian_ingredient|default:""|slice:"3:"|capfirst}}
+                              {% if not forloop.last %},{% endif %}
+                             {% endfor %}
+                             {% else %}
+                             Info not available
+                             {% endif %}
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="accordion-item">
+                        <h2 class="accordion-header">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vegancollapse" aria-expanded="false" aria-controls="collapseThree">
+                            {% if vegan %}Vegan{% else %}
+                              {% if 'en:non-vegan' in response.product.ingredients_analysis_tags %}
+                                Non-vegan
+                              {% else %}
+                                Vegan status unknown
+                              {% endif %}
+                            {% endif %}
+                          </button>
+                        </h2>
+                        <div id="vegancollapse" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                            {% if vegan %}
+                              No non-vegan ingredients detected
+                            {% else %}
+                            <strong>Non-vegan ingredients:</strong> 
+                              {% if non_vegan_ingredients %}
+                              {% for non_vegan_ingredient in non_vegan_ingredients %}
+                                {{non_vegan_ingredient|default:""|slice:"3:"|capfirst}}
+                                {% if not forloop.last %},{% endif %}
+                              {% endfor %}
+                              {% else %}
+                              Info not available
+                              {% endif %}
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nutrition -->
+              <div class="card" id="nutrition">
+                <div class="card-body">
+                  <h3 class="card-title fw-semibold mb-3">Nutrition</h3>
+                  <!-- Accordian -->
+                  <div class="accordion accordion-flush" id="NutritionAccordian">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed py-2 " type="button" data-bs-toggle="collapse" data-bs-target="#fat-collapse" aria-expanded="false" aria-controls="flush-collapseOne">
+                          <span class="{% if response.product.nutrient_levels.fat == 'high' %}bg-danger{% elif response.product.nutrient_levels.fat == 'moderate' %}bg-warning{% elif response.product.nutrient_levels.fat == 'low' %}bg-success{% else %}bg-secondary{% endif %} p-3 rounded-circle me-4"></span>
+                            <span>{% if response.product.nutrient_levels.fat == 'high' %}Fat in high quantity{% elif response.product.nutrient_levels.fat == 'moderate' %}Fat in moderate quantity{% elif response.product.nutrient_levels.fat == 'low' %}Fat in low quantity{% else %}Not known{% endif %}</span>
+                        </button>
+                      </h2>
+                      <div id="fat-collapse" class="accordion-collapse collapse" data-bs-parent="#NutritionAccordian">
+                        <div class="accordion-body">
+                          <h6 class="fw-semibold">What you need to know</h6>
+                          <ul>
+                            <li><p>A high consumption of fat, especially saturated fats, can raise cholesterol, which increases the risk of heart diseases.</p></li>
+                          </ul>
+                          <h6 class="fw-semibold">Recommendation: Limit the consumption of fat</h6>
+                          <ul>
+                            <li><p>Choose products with lower fat and saturated fat content.</p></li>
+                          </ul>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Source: National Health Service UK (NHS) - Fat: the facts</h6>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#sugar-collapse" aria-expanded="false" aria-controls="flush-collapseThree">
+                          <span class="{% if response.product.nutrient_levels.sugars == 'high' %}bg-danger{% elif response.product.nutrient_levels.sugars == 'moderate' %}bg-warning{% elif response.product.nutrient_levels.sugars == 'low' %}bg-success{% else %}bg-secondary{% endif %} p-3 rounded-circle me-4"></span>
+                            <span>{% if response.product.nutrient_levels.sugars == 'high' %}Sugar in high quantity{% elif response.product.nutrient_levels.sugars == 'moderate' %}Sugar in moderate quantity{% elif response.product.nutrient_levels.sugars == 'low' %}Sugar in low quantity{% else %}Not known{% endif %}</span>
+                        </button>
+                      </h2>
+                      <div id="sugar-collapse" class="accordion-collapse collapse" data-bs-parent="#NutritionAccordian">
+                        <div class="accordion-body">
+                          <h6 class="fw-semibold">What you need to know</h6>
+                          <ul>
+                            <li><p>A high consumption of sugar can cause weight gain and tooth decay. It also augments the risk of type 2 diabetes and cardio-vascular diseases.</p></li>
+                          </ul>
+                          <h6 class="fw-semibold">Recommendation: Limit the consumption of sugar and sugary drinks</h6>
+                          <ul>
+                            <li><p>Sugary drinks (such as sodas, fruit beverages, and fruit juices and nectars) should be limited as much as possible (no more than 1 glass a day).</p></li>
+                            <li><p>Choose products with lower sugar content and reduce the consumption of products with added sugars.</p></li>
+                          </ul>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Source: National Health Service UK (NHS) - Sugar: the facts</h6>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#salt-collapse" aria-expanded="false" aria-controls="flush-collapseThree">
+                          <span class="{% if response.product.nutrient_levels.salt == 'high' %}bg-danger{% elif response.product.nutrient_levels.salt == 'moderate' %}bg-warning{% elif response.product.nutrient_levels.salt == 'low' %}bg-success{% else %}bg-secondary{% endif %} p-3 rounded-circle me-4"></span>
+                            <span>{% if response.product.nutrient_levels.salt == 'high' %}Salt in high quantity{% elif response.product.nutrient_levels.salt == 'moderate' %}Salt in moderate quantity{% elif response.product.nutrient_levels.salt == 'low' %}salt in low quantity{% else %}Not known{% endif %}</span>
+                        </button>
+                      </h2>
+                      <div id="salt-collapse" class="accordion-collapse collapse" data-bs-parent="#NutritionAccordian">
+                        <div class="accordion-body">
+                          <h6 class="fw-semibold">What you need to know</h6>
+                          <ul>
+                            <li><p>A high consumption of salt (or sodium) can cause raised blood pressure, which can increase the risk of heart disease and stroke.</p></li>
+                            <li><p>Many people who have high blood pressure do not know it, as there are often no symptoms.</p></li>
+                            <li><p>Most people consume too much salt (on average 9 to 12 grams per day), around twice the recommended maximum level of intake.</p></li>
+                          </ul>
+                          <h6 class="fw-semibold">Recommendation: Limit the consumption of salt and salted food</h6>
+                          <ul>
+                            <li><p>Reduce the quantity of salt used when cooking, and don't salt again at the table.</p></li>
+                            <li><p>Limit the consumption of salty snacks and choose products with lower salt content.</p></li>
+                          </ul>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Source: World Health Organization (WHO) - Fact sheet - Salt reduction</h6>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed py-2" type="button" data-bs-toggle="collapse" data-bs-target="#saturatedfat-collapse" aria-expanded="false" aria-controls="flush-collapseTwo">
+                          <span class="{% if response.product.nutrient_levels.saturated_fat == 'high' %}bg-danger{% elif response.product.nutrient_levels.saturated_fat == 'moderate' %}bg-warning{% elif response.product.nutrient_levels.saturated_fat == 'low' %}bg-success{% else %}bg-secondary{% endif %} p-3 rounded-circle me-4"></span><span>Saturated Fat</span>
+                        </button>
+                      </h2>
+                      <div id="saturatedfat-collapse" class="accordion-collapse collapse" data-bs-parent="#NutritionAccordian">
+                        <div class="accordion-body">
+                          <h6 class="fw-semibold">What you need to know</h6>
+                          <ul>
+                            <li><p>A high consumption of fat, especially saturated fats, can raise cholesterol, which increases the risk of heart diseases.</p></li>
+                          </ul>
+                          <h6 class="fw-semibold">Recommendation: Limit the consumption of saturated fat</h6>
+                          <ul>
+                            <li><p>Choose products with lower fat and saturated fat content.</p></li>
+                          </ul>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Source: National Health Service UK (NHS) - Fat: the facts</h6>
+                        </div>
+                      </div>
+                    </div> {% endcomment %}
+                  </div>
+                  <!-- Nutrition Facts -->
+                  <div class="my-4">
+                    <h4 class="weight-600">Nutrition Facts</h4>
+                    <h6 class="text-success mb-0">Positives</h6>
+                      <div class="positive-protein mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Protein per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.proteins_100g}} g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.proteins_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="positive-Carbs mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Carbs per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.carbohydrates_100g}} g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.carbohydrates_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="positive-Fiber mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Fiber per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.fiber_100g}} g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.fiber_100g}}%"></div>
+                        </div>
+                      </div>
+                      <div class="positive-calcium mt-2">
+                        <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                          <p class="mb-1">Calcium per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.calcium_100g}} g</p>
+                        </div>
+                        <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                          <div class="progress-bar bg-success" style="width:{{response.product.nutriments.calcium_100g}}%"></div>
+                        </div>
+                      </div>
+
+                      <div class="negatives">
+                        <h6 class="text-danger mt-4">Negatives</h6>
+                        <div class="negative-Fat mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Fat per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.fat_100g}} g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.fat_100g}}%"></div>
+                          </div>
+                        </div>
+
+                        <div class="negative-Sugar mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Sugar per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.sugars_100g}} g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.sugars_100g}}%"></div>
+                          </div>
+                        </div>
+                        <div class="negative-Sodium mt-2">
+                          <div class="d-flex justify-content-between align-items-center" style="font-size:0.9rem;">
+                            <p class="mb-1">Sodium per 100g</p><p class="fw-bold mb-1">{{response.product.nutriments.sodium_100g}} g</p>
+                          </div>
+                          <div class="progress rounded-5" role="progressbar" aria-label="Success example" style="height:7px;" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar bg-danger" style="width:{{response.product.nutriments.sodium_100g}}%"></div>
+                          </div>
+                        </div>
+                  </div>
+
+                </div>
+              </div>
+        </main>
+        {% else %}
+          <div class="position-absolute top-50 start-50 translate-middle d-flex justify-content-center align-items-center flex-column">
+            <svg xmlns="http://www.w3.org/2000/svg" height="150" width="150" viewBox="0 0 512 512" fill="#A08D84"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM159.3 388.7c-2.6 8.4-11.6 13.2-20 10.5s-13.2-11.6-10.5-20C145.2 326.1 196.3 288 256 288s110.8 38.1 127.3 91.3c2.6 8.4-2.1 17.4-10.5 20s-17.4-2.1-20-10.5C340.5 349.4 302.1 320 256 320s-84.5 29.4-96.7 68.7zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+            <h3 class="mt-3">Sorry we are unable to find the product</h3>
+            <a href="{% url 'home' %}" class="btn btn-success mt-3">Scan again</a>
+          </div>
+        {% endif %}
+
+        <script src="" async defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    </body>
+</html>

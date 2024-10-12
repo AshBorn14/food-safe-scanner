@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-6 offset-md-3   p-4 rounded-3">
+    <h1 class="text-center text-success">Choose Your Health Preferences</h1>
+    <form  method="POST" class="mt-4" action="">
+        {% csrf_token %}
+        {% if form.errors or form.non_field_errors %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                Please Fill the form correctly
+                {% for field in form %}
+                    {% if field.errors %}
+                        {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                
+            </div>
+        {% endif %}
+        
+        {{form.as_p}}
+        <button type="submit" class="btn btn-success btn-md mt-3 w-100">Submit Preferences</button>
+    </form>
+    </div>
+{% endblock %}
