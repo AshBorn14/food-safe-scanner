@@ -1,0 +1,45 @@
+body{
+    background-color:#F6F3F0;
+    font-family:'karla',sans-serif;
+}
+header{
+    background-color:rgba(33, 150, 83,0.6);
+}
+.header-content{
+    width:95%;
+    max-width:1000px;
+    margin:1.2em auto;
+    color:black;
+
+}
+.navbar-elements{
+    position: sticky;
+    top:20px;
+}
+h2{
+    color:black;
+    opacity: 1;
+}
+main{
+    width:95%;
+    max-width:1000px;
+    margin:0 auto;
+}
+.product-main-detail{
+    margin-top:-40px;
+}
+.test{
+    display: flex;
+    
+}
+.preferences-icon{
+    width:90px;
+    height:50px;
+}
+.prefrences{
+    display: grid;
+    grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
+}
+.weight-600{
+    font-weight:600;
+}
