@@ -68,8 +68,9 @@ WSGI_APPLICATION = 'foodsafeScanner.wsgi.application'
 # Database
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.getenv('MYSQL_URL'),
-        conn_max_age=600  # Keep connections open for 10 minutes
+        default='mysql://root:jaresFSVjmPQKwetnFswZCeTQUEkWIKn@mysql.railway.internal:3306/railway',
+        conn_max_age=600,  # optional: keeps connections alive longer
+        ssl_require=False  # optional: set to True if Railway requires SSL for the database
     )
 }
 
