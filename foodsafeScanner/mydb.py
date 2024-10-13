@@ -1,9 +1,9 @@
 import mysql.connector
 
 dataBase = mysql.connector.connect(
-    host = 'localhost',
+    host = 'mysql.railway.internal',
     user = 'root',
-    passwd = 'root@123'
+    passwd = 'jaresFSVjmPQKwetnFswZCeTQUEkWIKn'
 )
 
 cursorObject = dataBase.cursor()
