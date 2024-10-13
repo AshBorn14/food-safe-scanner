@@ -1,1 +1,1 @@
-web: gunicorn foodsafeScanner.wsgi --log-file -
+web: gunicorn your_project_name.wsgi
