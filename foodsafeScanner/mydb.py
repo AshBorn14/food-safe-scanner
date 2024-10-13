@@ -1,13 +1,13 @@
-import mysql.connector
+# import mysql.connector
 
-dataBase = mysql.connector.connect(
-    host = 'mysql.railway.internal',
-    user = 'root',
-    passwd = 'jaresFSVjmPQKwetnFswZCeTQUEkWIKn'
-)
+# dataBase = mysql.connector.connect(
+#     host = 'mysql.railway.internal',
+#     user = 'root',
+#     passwd = 'jaresFSVjmPQKwetnFswZCeTQUEkWIKn'
+# )
 
-cursorObject = dataBase.cursor()
+# cursorObject = dataBase.cursor()
 
-cursorObject.execute('CREATE DATABASE foodsafe')
+# cursorObject.execute('CREATE DATABASE foodsafe')
 
-print("All Done")
+# print("All Done")
