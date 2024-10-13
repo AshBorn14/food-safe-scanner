@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 import dj_database_url
 import pymysql
-pymysql.install_as_MySQLdb()  # Add this line to enable PyMySQL
+
+pymysql.install_as_MySQLdb()   # This line allows PyMySQL to act as MySQLdb
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,11 +68,23 @@ WSGI_APPLICATION = 'foodsafeScanner.wsgi.application'
 # Database
 DATABASES = {
     'default': dj_database_url.config(
-        default='mysql://root:jaresFSVjmPQKwetnFswZCeTQUEkWIKn@mysql.railway.internal:3306/railway',
+        default='mysql://root:jaresFSVjmPQKwetnFswZCeTQUEkWIKn@autorack.proxy.rlwy.net:38733/railway',
         conn_max_age=600,  # optional: keeps connections alive longer
         ssl_require=False  # optional: set to True if Railway requires SSL for the database
     )
 }
+
+""" DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # Keep this
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'jaresFSVjmPQKwetnFswZCeTQUEkWIKn',
+        'HOST': 'mysql.railway.internal',  # or the appropriate host
+        'PORT': '3306',       # or the appropriate port
+    }
+} """
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
