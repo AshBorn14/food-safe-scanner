@@ -3,6 +3,7 @@ from pathlib import Path
 import dj_database_url
 import pymysql
 
+
 pymysql.install_as_MySQLdb()   # This line allows PyMySQL to act as MySQLdb
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
